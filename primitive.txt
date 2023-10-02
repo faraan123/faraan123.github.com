@@ -1,0 +1,111 @@
+let shapes = [];
+let currentColor;
+
+function setup() {
+  createCanvas(400, 400);
+  currentColor = color(random(255), random(255), random(255));
+  textFont('Georgia', 24); // Change the font
+  textAlign(CENTER);
+}
+
+function draw() {
+  background(220);
+
+  for (let shape of shapes) {
+    shape.display();
+  }
+
+  fill(0);
+  text("Artist: Your Name", width / 2, height - 20);
+
+  autonomousArt(); // Call the autonomous art function
+}
+
+function mouseClicked() {
+  let x = mouseX;
+  let y = mouseY;
+
+  if (keyIsPressed) {
+    if (key === 'a') {
+      let rectShape = new Rectangle(x, y);
+      shapes.push(rectShape);
+    } else if (key === 's') {
+      let ellipseShape = new Ellipse(x, y);
+      shapes.push(ellipseShape);
+    } else if (key === 'd') {
+      // Add your custom shape here
+      let customShape = new CustomShape(x, y);
+      shapes.push(customShape);
+    }
+  }
+}
+
+function keyReleased() {
+  if (key === 'r') {
+    currentColor = color(random(255), random(255), random(255));
+  }
+}
+
+function autonomousArt() {
+  // Add your autonomous art element here
+  let x = random(width);
+  let y = random(height);
+  let size = random(20, 50);
+  fill(currentColor);
+  noStroke();
+  ellipse(x, y, size);
+}
+
+function keyPressed() {
+  if (key === ' ') {
+    shapes = []; // Clear all shapes on spacebar press
+  }
+}
+
+class Shape {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  display() {
+    // This is the base shape class
+  }
+}
+
+class Rectangle extends Shape {
+  constructor(x, y) {
+    super(x, y);
+    this.width = random(20, 50);
+    this.height = random(20, 50);
+  }
+
+  display() {
+    fill(currentColor);
+    rect(this.x, this.y, this.width, this.height);
+  }
+}
+
+class Ellipse extends Shape {
+  constructor(x, y) {
+    super(x, y);
+    this.diameter = random(20, 50);
+  }
+
+  display() {
+    fill(currentColor);
+    ellipse(this.x, this.y, this.diameter);
+  }
+}
+
+class CustomShape extends Shape {
+  constructor(x, y) {
+    super(x, y);
+    // Define your custom shape here
+  }
+
+  display() {
+    fill(currentColor);
+    // Draw your custom shape here
+  }
+}
