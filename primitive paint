@@ -9,7 +9,7 @@ function setup() {
 }
 
 function draw() {
-  background(220);
+  background(220);// hi hhhahahaahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
 
   for (let shape of shapes) {
     shape.display();
