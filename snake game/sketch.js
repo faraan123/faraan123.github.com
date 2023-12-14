@@ -6,51 +6,52 @@
 // - describe what you did to take this project "above and beyond"
 
 //global variables
-let point = []; //snake coordinates
-let headLocation;
-let speed = 3;
-let snakeLength = 24;
-
+// Global Variables
+let points = []; //snake coordinates
+let headLocation; //object - where the head is
+let speed = 10;
+let snakeLength = 25;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   headLocation = new Point(width/2, height/2);
-  imitSnake();
+  initSnake();
   strokeWeight(15);
 }
 
-
 function initSnake(){
+  //set up 5 points in our array
   for(let i = 0; i < snakeLength; i++){
     points.push(createPoint());
   }
-  
 }
 
 function createPoint(){
+  //keyboard control, return a Point object
   if(keyCode===RIGHT_ARROW) headLocation.x += speed;
-  else if(keycode===LEFT_ARROW) headLocation.x -= speed;
-  else if(Keycode===UP_ARROW) headLocation.x -= speed
-  else if(Keycode===DOWN_ARROW) headLocation.x += speed
-  return new Point(headLocation)
-  }
+  else if(keyCode===LEFT_ARROW) headLocation.x -= speed;
+  else if(keyCode===UP_ARROW) headLocation.y -= speed;
+  else if(keyCode===DOWN_ARROW) headLocation.y += speed;
+  return new Point(headLocation.x, headLocation.y);
 
+}
 
 function displaySnake(){
-  for(let i = 0; i<points.lenght-1;i++){
-    let current = points[i];
-    let right = points[i+1];
-    let alphaValue = map(i, 0, points.lenght-1,0,225)
+  //loop through all pairs of points
+  for(let i = 0; i<points.length-1;i++){
+    let curr = points[i];  //current item
+    let right = points[i+1];  //right neighbour   //0 transparent - 255 opaque
+    let alphaValue = map(i, 0, points.length-1,0,255 );
+    stroke(0,alphaValue);
     line(curr.x,curr.y,right.x,right.y);
-
   }
 }
 
 function moveSnake(){
-  points.splice(0,1);
-  points.push()
+  //delete first point, add a new point on the end
+  points.splice(0,1); //deleting the tail
+  points.push(createPoint());
 }
-
 
 function draw() {
   background(220);
@@ -58,9 +59,9 @@ function draw() {
   displaySnake();
 }
 
-class point{  //simple class (x,y) point
+class Point{   // simple class for (x,y) point
   constructor(x,y){
     this.x = x;
-    this.y = y
+    this.y = y;
   }
 }
