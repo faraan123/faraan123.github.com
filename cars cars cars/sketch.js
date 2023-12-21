@@ -5,104 +5,114 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-
-const roadSegments = [];
-const vehicles = [];
+let eastbound = [];
+let westbound = [];
 
 function setup() {
   createCanvas(800, 400);
-
-  // Initialize road segments
-  const numSegments = 5;
-  const roadWidth = width * 0.9;
-  const segmentWidth = roadWidth / numSegments;
-  for (let i = 0; i < numSegments; i++) {
-    const x = i * segmentWidth;
-    roadSegments.push({ x, y: height / 2, width: segmentWidth, height: 2 });
-  }
-
-  // Initialize vehicles
-  for (let i = 0; i < 5; i++) {
-    const lane = i % 4 === 0 ? 0 : 1; // Alternate lanes
-    const laneOffset = lane * segmentWidth / 2 + segmentWidth / 3;
-    const y = roadSegments[0].y - laneOffset;
-    const randomColor = getRandomColor();
-    if (i % 2 === 0) {
-      vehicles.push(new Car(numSegments - 1, y, randomColor));
-    } else {
-      vehicles.push(new Truck(numSegments - 1, y, randomColor));
-    }
-  }
+  generateVehicles();
 }
 
 function draw() {
-  background(0); // Black background
+  background(200);
   drawRoad();
-  updateVehicles();
-  renderVehicles();
+
+  // Process eastbound vehicles
+  for (let vehicle of eastbound) {
+    vehicle.action();
+  }
+
+  // Process westbound vehicles
+  for (let vehicle of westbound) {
+    vehicle.action();
+  }
 }
 
 function drawRoad() {
-  // Draw the road with a white dashed line in the middle
-  for (const segment of roadSegments) {
-    rect(segment.x, segment.y, segment.width, segment.height);
-    stroke(255);
-    for (let x = segment.x; x < segment.x + segment.width; x += 30) {
-      line(x, segment.y, x + 0, segment.y);
-    }
+  // Draw black road
+  fill(0);
+  rect(100, 0, width - 200, height);
+
+  // Draw dashed white lane dividing the middle
+  stroke(255);
+  strokeWeight(5);
+  let dashLength = 20;
+  let gapLength = 10;
+  let totalLength = width - 200;
+
+  for (let i = 0; i < totalLength; i += dashLength + gapLength) {
+    line(100 + i, height / 2, 100 + i + dashLength, height / 2);
   }
 }
 
-function updateVehicles() {
-  for (const vehicle of vehicles) {
-    vehicle.update();
-  }
-}
+function generateVehicles() {
+  for (let i = 0; i < 20; i++) {
+    // Generate eastbound vehicles
+    eastbound.push(new Vehicle(150, random(height / 4), 0, color(random(255), random(255), random(255))));
 
-function renderVehicles() {
-  for (const vehicle of vehicles) {
-    vehicle.render();
+    // Generate westbound vehicles
+    westbound.push(new Vehicle(width - 150, random(height / 1), 1, color(random(255), random(255), random(255))));
   }
 }
 
 class Vehicle {
-  constructor(laneIndex, initialY, color) {
-    this.x = roadSegments[laneIndex].x + roadSegments[laneIndex].width / 2;
-    this.y = initialY;
-    this.speed = Math.random() * (5 - 2) + 2;
-    this.color = color;
+  constructor(x, y, direction, vehicleColor) {
+    this.type = floor(random(2));
+    this.color = vehicleColor;
+    this.x = x;
+    this.y = y;
+    this.direction = direction;
+    this.xSpeed = random(1, 5);
   }
 
-  update() {
-    this.x += this.speed;
+  move() {
+    this.x += this.xSpeed;
+
+    // Wrap around to the opposite side if off-screen
     if (this.x > width) {
-      this.x = -20;
+      this.x = 0;
+    } else if (this.x < 0) {
+      this.x = width;
     }
   }
 
-  render() {
-    fill(this.color);
-    // Draw a simple representation of a vehicle
-    ellipse(this.x, this.y, 30, 20);
+  speedUp() {
+    this.xSpeed = min(this.xSpeed + 0.5, 15);
   }
-}
 
-class Car extends Vehicle {
-  render() {
-    fill(this.color);
-    // Draw a car
-    rect(this.x - 15, this.y - 10, 30, 20);
+  speedDown() {
+    this.xSpeed = max(this.xSpeed - 0.5, 0);
   }
-}
 
-class Truck extends Vehicle {
-  render() {
-    fill(this.color);
-    // Draw a truck
-    rect(this.x - 20, this.y - 10, 40, 20);
+  changeColor() {
+    this.color = color(random(255), random(255), random(255));
   }
-}
 
-function getRandomColor() {
-  return color(random(255), random(255), random(255));
+  action() {
+    this.move();
+
+    if (random() < 0.01) {
+      this.speedUp();
+    }
+
+    if (random() < 0.01) {
+      this.speedDown();
+    }
+
+    if (random() < 0.01) {
+      this.changeColor();
+    }
+
+    this.display();
+  }
+
+  display() {
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2]);
+
+    if (this.type === 0) {
+      rect(this.x, this.y - 10, 30, 20); // Car
+    } else {
+      rect(this.x, this.y - 15, 40, 30); // Truck/Van
+    }
+  }
 }
