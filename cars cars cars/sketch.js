@@ -48,7 +48,7 @@ function drawRoad() {
 function generateVehicles() {
   for (let i = 0; i < 20; i++) {
     // Generate eastbound vehicles
-    eastbound.push(new Vehicle(150, random(height / 4), 0, color(random(255), random(255), random(255))));
+    eastbound.push(new Vehicle(150, random(height / 2), 0, color(random(255), random(255), random(255))));
 
     // Generate westbound vehicles
     westbound.push(new Vehicle(width - 150, random(height / 1), 1, color(random(255), random(255), random(255))));

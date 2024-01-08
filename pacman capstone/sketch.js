@@ -6,12 +6,17 @@ let maze;
 let ball;
 let ghosts = [];
 let points = [];
+let score = 0
 
 
 function setup() {
   createCanvas(1000, 800); // Wider canvas
   maze = new Maze();
   ball = new Ball(width / 2, height / 2, 20); // Initialize ball in the middle
+
+  fill(0)
+  textSize(20);
+  text("score: " + score, 20, 30);
 
   // Instantiate ghosts
   ghosts.push(new Ghost(100, 100, color("blue")));
@@ -39,6 +44,8 @@ function draw() {
     ghost.display();
     ghost.update();
   }
+
+  
 
   maze.display();
 
